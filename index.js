@@ -1,8 +1,8 @@
 const Recorder = require('./recorder');
 const Tone = require('tone');
 
-const RECORDING_MAX_DURATION = 20; // seconds
-const recorder = new Recorder(RECORDING_MAX_DURATION);
+const RECORDING_MAX_DURATION = 3; // seconds
+const recorder = new Recorder(RECORDING_MAX_DURATION, storeRecord);
 let arrBuffer = [];
 function toggleRecorder(){
   if(recorder.isRecording === false) {
@@ -15,8 +15,18 @@ function toggleRecorder(){
 
 function onKeypress(e) {
   switch (e.key) {
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+      playRecord(Number(e.key)-1);
+      break;
     case 'r':
-      storeRecord();
+      toggleRecorder();
       break;
     case ' ':
       playRecord();
@@ -25,8 +35,8 @@ function onKeypress(e) {
       
   }
 }
-function storeRecord() {
-  arrBuffer.push(recorder.exportBuffer());
+function storeRecord(rec) {
+  arrBuffer.push(rec.exportBuffer());
 }
 function playRecord(index) {
   if (arrBuffer.length === 0) {
@@ -56,5 +66,4 @@ window.playRecord = playRecord;
 
 document.body.style.width = "100vw";
 document.body.style.height = "100vh";
-document.body.addEventListener('mousedown', toggleRecorder);
 document.body.addEventListener('keypress', onKeypress);
