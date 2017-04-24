@@ -8,10 +8,10 @@ const Tone = require('tone');
 let bufferDuration = 5;
 
 class Recorder {
-  constructor(duration = bufferDuration) {
+  constructor(duration = bufferDuration, cb = Tone.noOp) {
     bufferDuration = duration;
     this.start = this.start.bind(this);
-    this.stop = this.stop.bind(this);
+    this.stop = this.stop.bind(this, cb);
     
     // NOTE Tone@0.10.0
     // this.mic = new Tone.UserMedia();
@@ -52,7 +52,7 @@ class Recorder {
       }
     );
   }
-  stop() {
+  stop(cb) {
     console.log('stop');
     this.mic.close();
     this.jsNode.onaudioprocess = Tone.noOp;
@@ -64,6 +64,7 @@ class Recorder {
         break;
       }
     }
+    cb(this);
   }
   _onprocess(event) {
     // store audio into bufferArray, and
