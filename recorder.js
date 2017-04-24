@@ -14,12 +14,18 @@ class Recorder {
     this.stop = this.stop.bind(this, cb);
     
     // NOTE Tone@0.10.0
-    // this.mic = new Tone.UserMedia();
+    this.mic = new Tone.UserMedia();
     // NOTE Tone@0.7.1
-    this.mic = new Tone.Microphone();
+    // this.mic = new Tone.Microphone();
     
     this.jsNode = Tone.context.createScriptProcessor(4096, 1, 1);
-    this.jsNode.noGC();
+    // HACK connect to a silent node to make sure it'll not be garbage collected
+    // Use carefully
+    const _silentNode = Tone.context.createGain();
+    _silentNode.gain.value = 0;
+    _silentNode.connect(Tone.context.destination);
+    this.jsNode.connect(_silentNode);
+
     this.mic.connect(this.jsNode);
     
     this.audioBuffer = Tone.context.createBuffer(1, Tone.context.sampleRate * bufferDuration, Tone.context.sampleRate);
@@ -36,21 +42,15 @@ class Recorder {
   start() {
     console.log('start');
     this.jsNode.onaudioprocess = this._onprocess.bind(this);
-    this.mic.open(
-      () => {
-        //0 out the buffer
-        for (var i = 0; i < this.bufferArray.length; i++){
-          this.bufferArray[i] = 0;
-        }
-        this.isRecording = true;
-        this.bufferPosition = 0;
-        this.head = 0;
-        this.mic.start();
-      },
-      (err) => {
-        console.log(err);
+    this.mic.open().then(() => {
+      //0 out the buffer
+      for (var i = 0; i < this.bufferArray.length; i++){
+        this.bufferArray[i] = 0;
       }
-    );
+      this.isRecording = true;
+      this.bufferPosition = 0;
+      this.head = 0;
+    });
   }
   stop(cb) {
     console.log('stop');
