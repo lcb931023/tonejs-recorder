@@ -14,6 +14,9 @@ Success!
 ## Project Statistics
 
 Time taken: 3h30m
+
 Time using the keyboard: 2h47m
+
 (Source: Wakatime)
+
 Typing v.s. Researching ratio: ~0.8
