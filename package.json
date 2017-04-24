@@ -1,0 +1,20 @@
+{
+  "name": "recorder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "budo index.js:bundle.js --live",
+    "build": "browserify index.js | uglifyjs -cm > bundle.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "browserify": "^14.3.0",
+    "budo": "^10.0.3",
+    "uglify-js": "^2.8.22"
+  },
+  "dependencies": {
+    "tone": "^0.7.1"
+  }
+}
